@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlaySphere | Game Hub</title>
+  <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/3408/3408506.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --secondary: #4f46e5;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --gradient-start: #f0f4ff;
+      --gradient-end: #f8faff;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* Header (Navbar) with blue tint */
+    .navbar {
+      background: rgba(59, 130, 246, 0.98);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+      padding: 1rem 0;
+    }
+
+    .brand {
+      font-weight: 700;
+      color: var(--light);
+      font-size: 1.8rem;
+    }
+
+    /* Game card styling */
+    .game-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      border: 1px solid rgba(224, 231, 255, 0.6);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      cursor: pointer;
+      height: 100%;
+    }
+
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+    }
+
+    .game-image {
+      height: 180px;
+      object-fit: cover;
+      width: 100%;
+      display: block;
+      border-bottom: 3px solid var(--primary);
+      border-radius: 12px 12px 0 0;
+    }
+
+    .game-title {
+      font-weight: 600;
+      color: var(--dark);
+      padding: 1rem;
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    /* Category button styles */
+    .category-btn {
+      background: rgba(224, 231, 255, 0.4);
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 0.6rem 1.2rem;
+      margin: 0.4rem;
+      font-weight: 600;
+      color: var(--dark);
+      transition: all 0.2s ease;
+    }
+
+    .category-btn.active {
+      background: var(--primary);
+      color: white !important;
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    }
+
+    /* Game view container */
+    .game-view-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      margin-top: 2px;
+    }
+
+    .description-box {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .recommended-section {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* Game view header for Back button */
+    .game-view-header {
+      position: absolute;
+      top: 80px; /* Adjust if your nav bar is taller */
+      right: 20px;
+      z-index: 10;
+    }
+
+    /* Game view footer for Fullscreen button */
+    .game-view-footer {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
+    }
+
+   /* --- Similar Games Section Adjustments --- */
+#sameCategoryRecommendations .game-card {
+  max-width: 300px;   /* Thinner game cards */
+  width: 100%;
+  margin: 0 auto;
+  /* Remove the purple outline on the left and bottom by eliminating any border property here */
+  border: none; 
+}
+
+/* Optionally, if the inner game-card has an image border that needs removal, adjust that too: */
+#sameCategoryRecommendations .game-image {
+  border: none; /* Removes the primary colored border */
+}
+
+/* --- Back and Fullscreen Buttons (Using the Previous Code) --- */
+.game-controls {
+  position: fixed;
+  z-index: 1000;
+}
+
+.game-controls {
+  text-align: right;
+  margin-bottom: 1rem; /* Space between buttons and the game box */
+}
+
+#backBtn {
+    margin: 10px;
+            top: 20px;
+            right: 20px;
+            background: #ef4444;
+            padding: 8px 16px;
+            bottom: 10px;
+        }
+
+        #fullscreenBtn {
+            margin: 10px;
+            top: 20px;
+            bottom: 10px;
+            right: 20px;
+            background: #3b82f6;
+            padding: 8px 16px;
+        }
+
+    /* Enhanced hover effect */
+    .game-card:hover {
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+    }
+    
+    /* NEW: Game frame scaling styles */
+    .game-frame-wrapper {
+      position: relative;
+      width: 100%;
+      height: 60vh;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #000;
+    }
+    
+    #gameFrame {
+      position: absolute;
+      border: none;
+      transform-origin: top left;
+    }
+    
+    .scale-controls {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      z-index: 100;
+      display: flex;
+      gap: 5px;
+    }
+    
+    .scale-btn {
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand brand" href="#">
+        🎮 PlaySphere
+      </a>
+      <div class="d-flex">
+        <input type="search" 
+               class="form-control search-box" 
+               placeholder="🔍 Search games..."
+               style="width: 300px">
+      </div>
+    </div>
+  </nav>
+
+  <!-- Category Navigation -->
+  <nav class="container py-2" id="categoryNav">
+    <div class="d-flex flex-wrap">
+      <button class="category-btn active" data-filter="all">All Games</button>
+      <button class="category-btn" data-filter="action">Action 🚀</button>
+      <button class="category-btn" data-filter="puzzle">Puzzle 🧩</button>
+      <button class="category-btn" data-filter="arcade">Arcade 🕹️</button>
+      <button class="category-btn" data-filter="sports">Sports ⚽</button>
+      <button class="category-btn" data-filter="parkour">Parkour 🦘</button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container" style="position: relative;">
+
+    <!-- Game View -->
+    <div id="gameView" style="display: none; position: relative; min-height: 80vh;">
+        <button id="backBtn" class="btn text-white" onclick="closeGame()">← Back</button>
+        <button id="fullscreenBtn" class="btn text-white" onclick="toggleFullScreen()">⛶ Fullscreen</button>
+
+      <!-- Game View Content -->
+      <div class="game-view-container">
+        <!-- Left Column -->
+        <div>
+          <div class="game-frame-wrapper">
+            <div class="scale-controls">
+              <button class="scale-btn" onclick="scaleGame('fit')">Fit</button>
+              <button class="scale-btn" onclick="scaleGame('fill')">Fill</button>
+              <button class="scale-btn" onclick="scaleGame(1)">100%</button>
+            </div>
+            <iframe id="gameFrame" sandbox="allow-scripts allow-same-origin" allowfullscreen></iframe>
+          </div>
+          
+          <div class="description-box">
+            <h5>About This Game</h5>
+            <p id="gameDescription" class="text-muted">
+              <!-- Description populated here -->
+            </p>
+          </div>
+
+          <!-- Bottom Recommendations -->
+          <div class="recommended-section">
+            <h5>More Games to Explore 🎲</h5>
+            <div class="row g-3" id="randomRecommendations"></div>
+          </div>
+        </div>
+
+        <!-- Right Column - Similar Games -->
+        <div class="recommended-section">
+          <h5>Similar Games 🎯</h5>
+          <div id="sameCategoryRecommendations"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Game Grid -->
+       <!-- Main Game Grid -->
+       <div class="row g-4 mt-4" id="gameGrid">
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="parkour">
+          <div class="game-card" 
+               data-game="Games/Appel.html" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen
+               data-description="Description:
+Appel is a physics-based platformer game where players control a round appel character navigating through challenging obstacle courses. The game features wobbly physics mechanics that make movement unpredictable and entertaining. With colorful graphics and progressively difficult levels, Appel tests players' precision and timing as they guide their fruity protagonist to the goal.
+
+How to Play:
+
+Navigate through various platforming levels
+
+Avoid obstacles like spikes, gaps, and moving platforms
+
+Reach the end goal of each level
+
+Some levels may require collecting items or solving simple puzzles
+
+Controls:
+
+Arrow Keys or WASD: Move the appel character
+
+Spacebar: Jump
+
+Mouse: Sometimes used for specific interactions">
+            <img src="https://uploads.scratch.mit.edu/get_image/project/60917032_480x360.png" 
+                 class="game-image" 
+                 alt="Appel Game">
+            <h5 class="game-title">Appel</h5>
+          </div>
+        </div>
+  
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="parkour">
+          <div class="game-card" 
+               data-game="Games/GettingOverIt.html"
+               data-description="Description:
+This is a Scratch-based adaptation of the popular frustrating climbing game Getting Over It with Bennett Foddy. Players control a man in a cauldron who must scale a mountain using only a sledgehammer. The game is notorious for its punishing difficulty - one wrong move can send you tumbling back down, losing significant progress.
+
+How to Play:
+
+Use the hammer to hook onto objects and pull yourself up
+
+Carefully maneuver around obstacles
+
+Try to reach the top of the mountain without falling
+
+Be prepared to lose progress and start over frequently
+
+Controls:
+
+Mouse: Click and drag to swing the hammer
+
+Patience: Required in large quantities">
+            <img src="https://uploads.scratch.mit.edu/get_image/project/389464290_480x360.png" 
+                 class="game-image" 
+                 alt="Getting Over It (Scratch Edition)">
+            <h5 class="game-title">Getting Over It (Scratch Edition)</h5>
+          </div>
+        </div>
+  
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="puzzle">
+          <div class="game-card" 
+               data-game="https://cdn.htmlgames.com/CarParkSort/"
+               data-description="Description:
+Car Park Sort is a logical parking puzzle game where players must rearrange vehicles in a crowded parking lot to allow a specific car to exit. Similar to classic sliding block puzzles, it challenges players' spatial reasoning and problem-solving skills with increasingly complex parking scenarios.
+
+How to Play:
+
+Slide vehicles horizontally or vertically to clear a path
+
+Plan several moves ahead to avoid deadlocks
+
+Free the red car from the parking lot
+
+Complete levels within move limits for better scores
+
+Controls:
+
+Mouse: Click and drag cars to move them
+
+Touchscreen: Works on mobile devices">
+            <img src="https://www.htmlgames.com/uploaded/game/thumb/carparksort300200.webp" 
+                 class="game-image" 
+                 alt="Car Park Sort">
+            <h5 class="game-title">Car Sort</h5>
+          </div>
+        </div>
+  
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="arcade">
+          <div class="game-card" 
+               data-game="https://kdata1.com/2024/02/capybara-clicker-pro/"
+               data-description="Description:
+Capybara Clicker is an idle clicker game featuring the world's largest rodents. Players start by clicking to generate capybaras, then use earned currency to purchase upgrades and automate production. The game features charming capybara animations and progressively more valuable capybara variants to unlock.
+
+How to Play:
+
+Click to generate capybaras and earn money
+
+Purchase upgrades to increase production
+
+Unlock new capybara types with special abilities
+
+Manage resources to maximize efficiency
+
+Controls:
+
+Mouse: Click on the capybara button
+
+Keyboard shortcuts: Some versions allow number keys for upgrades">
+            <img src="https://images.crazygames.com/games/capybara-clicker/cover-1678290947532.png?auto=format%2Ccompress&q=45&cs=strip&ch=DPR&w=1200&h=630&fit=crop" 
+                 class="game-image" 
+                 alt="Capybara Clicker">
+            <h5 class="game-title">Capybara Clicker</h5>
+          </div>
+        </div>
+  
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="arcade">
+          <div class="game-card"
+               data-game="https://SoBloxsy.github.io/idle-breakout"
+               data-description="Description:
+Idle Brick Breaker combines classic brick-breaking gameplay with idle mechanics. Players launch balls to destroy bricks and earn money, which can be used to upgrade ball speed, quantity, and special abilities. The game continues progressing even when closed, making it perfect for casual play.
+
+How to Play:
+
+Launch balls to break bricks
+
+Earn currency from destroyed bricks
+
+Purchase upgrades to enhance performance
+
+Unlock special balls with unique abilities
+
+Progress through increasingly difficult levels
+
+Controls:
+
+Mouse: Click to launch balls, break bricks and navigate menus
+
+Keyboard: Some versions allow spacebar to launch">
+            <img src="https://www.onlinegames.io/media/posts/692/responsive/Play-Idle-Breakout-xs.jpg" 
+                 class="game-image" 
+                 alt="Idle Brick Breaker">
+            <h5 class="game-title">Idle Breakout</h5>
+          </div>
+        </div>
+  
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="sports">
+          <div class="game-card" 
+               data-game="https://soccer-random.github.io/a8/soccer-random/"
+               data-description="Description:
+Soccer Random is a physics-based football game with intentionally wobbly and unpredictable mechanics. Players control teams of unstable characters in chaotic matches where the ball physics often lead to hilarious and unexpected outcomes. The game features various modes including tournaments and penalty shootouts.
+
+How to Play:
+
+Control your team's movement and kicking
+
+Score goals against the opposing team
+
+Use special moves when available
+
+Win matches to unlock new teams and stadiums
+
+Controls:
+
+Arrow Keys or WASD: Move your character
+
+Spacebar or mouse click: Kick the ball
+
+Special keys: For advanced moves (varies by version)">
+            <img src="https://images.crazygames.com/games/soccer-random/cover-1592583531704.png?auto=format,compress&q=75&cs=strip&ch=DPR&w=1200&h=630&fit=crop" 
+                 class="game-image" 
+                 alt="Soccer Random">
+            <h5 class="game-title">Soccer Random</h5>
+          </div>
+        </div>
+  
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="action">
+          <div class="game-card" 
+               data-game="https://abinbins.github.io/a77/1v1-lol-3/"
+               data-description="Description:
+1v1.LOL is a competitive online shooter that combines building mechanics with fast-paced combat. Players battle in 1v1 or team modes, constructing defensive structures while engaging in gunfights. The game features multiple weapons, building materials, and a ranking system for competitive play.
+
+How to Play:
+
+Eliminate opponents using various weapons
+
+Build defensive structures for protection
+
+Collect resources and better weapons
+
+Win matches to improve your rank
+
+Customize your character with earned cosmetics
+
+Controls:
+
+WASD: Movement
+
+Mouse: Aim and shoot
+
+Number keys: Weapon selection
+
+Q/E/R/F: Building controls (varies by version)
+
+Spacebar: Jump">
+            <img src="https://w8.snokido.com/img/large/1v1-lol.jpg?010121" 
+                 class="game-image" 
+                 alt="1v1.Lol">
+            <h5 class="game-title">1v1.LOL</h5>
+          </div>
+        </div>
+  
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="sports">
+          <div class="game-card" 
+               data-game="https://soccer-random.github.io/a77/drive-mad"
+               data-description="Description:
+Drive Mad is a physics-based driving game featuring intentionally unstable vehicles and challenging courses. Players must navigate treacherous terrain while dealing with exaggerated physics that make controlling the vehicles difficult. The game includes various vehicles and levels with different environmental hazards.
+
+How to Play:
+
+Select a vehicle and level
+
+Navigate through the obstacle course
+
+Reach the finish line without crashing
+
+Complete challenges for better rewards
+
+Unlock new vehicles and levels
+
+Controls:
+
+Arrow Keys or WASD: Accelerate, brake, and steer
+
+Spacebar: Handbrake (in some versions)
+
+Mouse: Camera control (in some versions)">
+            <img src="https://fireboy-andwatergirl.io/data/image/game/drive-mad.png" 
+                 class="game-image" 
+                 alt="Drive Mad">
+            <h5 class="game-title">Drive Mad</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="action">
+          <div class="game-card" 
+               data-game="https://soccer-random.github.io/a/among-us"
+               data-description="Description:
+Among Us is a multiplayer social deduction game where players work together on a spaceship while trying to identify impostors among the crew. Crewmates complete tasks to maintain the ship, while impostors sabotage and eliminate crewmates without being caught. The game requires strategy, observation, and deception.
+
+How to Play:
+
+As a crewmate: Complete tasks and report suspicious activity
+
+As an impostor: Sabotage systems and eliminate crewmates
+
+Participate in emergency meetings to discuss suspicions
+
+Vote to eject suspected impostors
+
+Win by completing all tasks (crewmates) or eliminating enough crewmates (impostors)
+
+Controls:
+
+WASD: Movement
+
+Mouse: Interact with objects and UI
+
+E or mouse click: Use/activate
+
+R or mouse click: Report bodies
+
+Q: Kill (as impostor)
+
+Number keys: Sabotage options (as impostor)">
+            <img src="https://cdn.mobygames.com/covers/9699387-among-us-nintendo-switch-front-cover.jpg" 
+                 class="game-image" 
+                 alt="Among Us">
+            <h5 class="game-title">Among Us</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="parkour">
+          <div class="game-card" 
+               data-game="https://soccer-random.github.io/a5/jumping-shell"
+               data-description="Description:
+Jumping Shell is a platformer game where players control a bouncing shell character through various obstacle courses. The game features precise jumping mechanics and requires good timing to navigate through challenging levels filled with traps and moving platforms. You can launch another mini version of yourself to do the parkour for you!
+
+How to Play:
+
+Control the shell's bouncing trajectory
+
+Avoid obstacles and hazards
+
+Collect items for bonuses
+
+Reach the end of each level
+
+Complete levels within time limits for better scores
+
+Controls:
+
+Spacebar or mouse click: Jump
+
+Arrow Keys or WASD: Move left/right (in some versions)
+
+Mouse: Aim trajectory (in some versions)
+
+">
+            <img src="Images/JumpingShell.png" 
+                 class="game-image" 
+                 alt="Jumping Shell">
+            <h5 class="game-title">Jumping Shell</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="parkour">
+          <div class="game-card" 
+               data-game="https://www.rapidwebapp.com/game/vex4/index.html"
+               data-description="Description:
+Vex 4 is the fourth installment in the challenging Vex platformer series. Players control a stick figure navigating through deadly obstacle courses filled with spikes, saws, and other hazards. The game features precise movement controls and requires quick reflexes to complete its numerous levels.
+
+How to Play:
+
+Navigate through obstacle-filled levels
+
+Avoid deadly traps and hazards
+
+Reach the flag at the end of each level
+
+Collect optional coins for achievements
+
+Complete the game's various worlds
+
+Controls:
+
+Arrow Keys: Move and jump
+
+W or Up Arrow: Jump
+
+Shift: Sprint (in some versions)
+
+R: Restart level">
+            <img src="Images/Vex4.png" 
+                 class="game-image" 
+                 alt="Vex 4">
+            <h5 class="game-title">Vex 4</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="arcade">
+          <div class="game-card" 
+               data-game="https://playcanv.as/index/DLgXf1zr"
+               data-description="Description:
+Flappy Bird is a notoriously difficult one-button game where players control a bird navigating through pipes. The simple yet challenging gameplay made it a viral sensation. Players must time their flaps perfectly to maintain altitude without hitting obstacles.
+
+How to Play:
+
+Keep the bird flying through gaps in pipes
+
+Avoid hitting pipes or the ground
+
+Score points for each pipe passed
+
+Try to beat your high score
+
+Controls:
+
+Spacebar or mouse click: Make the bird flap
+
+Touchscreen: Tap to flap (on mobile)">
+            <img src="Images/FlappyBird.png" 
+                 class="game-image" 
+                 alt="Flappy Bird">
+            <h5 class="game-title">Flappy Bird</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="sports">
+          <div class="game-card" 
+               data-game="https://files.twoplayergames.org/files/games/other/Basket_Random/index.html"
+               data-description="Description:
+Basketball Random is a physics-based basketball game with unpredictable and often humorous gameplay. Players control wobbly characters in chaotic basketball matches where the ball physics lead to unexpected outcomes. The game features various modes including 1v1, 2v2, and trick shot challenges.
+
+How to Play:
+
+Control your character's movement
+
+Shoot, pass, and dunk the basketball
+
+Score more points than your opponent
+
+Use special moves when available
+
+Win matches to unlock new characters and courts
+
+Controls:
+
+Spacebar or mouse click: Jump/shoot
+
+">
+            <img src="https://th.bing.com/th/id/OIP.Kj9qgGtpPwUx2r2M9MlrhgHaEo?rs=1&pid=ImgDetMain" 
+                 class="game-image" 
+                 alt="Basketball Random">
+            <h5 class="game-title">Basketball Random</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="sports">
+          <div class="game-card" 
+               data-game="https://www.twoplayergames.org/gameframe/boxing-random"
+               data-description="Description:
+Boxing Random is a physics-based boxing game featuring unstable characters with exaggerated movement. Players engage in chaotic boxing matches where punches often lead to comical knockouts. The game includes various boxers with different stats and special moves. Double jumping could lead to an easy win, as you jump the way you were facing while grounded.
+
+How to Play:
+
+Control your boxer's movement
+
+Throw punches at your opponent
+
+Avoid incoming attacks
+
+Knock out your opponent to win
+
+Unlock new boxers with different abilities
+
+Controls:
+
+Spacebar or mouse click: Punch + Jump
+">
+            <img src="https://th.bing.com/th/id/OIP.ZS9PcUY3rROVczQpdif48AHaEH?rs=1&pid=ImgDetMain" 
+                 class="game-image" 
+                 alt="Boxing Random">
+            <h5 class="game-title">Boxing Random</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="arcade">
+          <div class="game-card" 
+               data-game="https://basketbros-unblocked.github.io/a4/chicken-merge"
+               data-description="Description:
+               Gather an army of chickens to defend or attack your base of operations!
+Chicken Merge is a merging puzzle game where players combine chickens to create new and more valuable breeds. The game combines idle mechanics with strategic merging decisions to maximize farm production. Players can expand their chicken empire through careful merging and upgrades.
+
+How to Play:
+
+Merge identical chickens to create new breeds
+
+Manage your farm space efficiently
+
+Collect eggs and other resources
+
+Upgrade your farm's capabilities
+
+Complete objectives to progress
+
+Controls:
+
+Mouse: Drag and drop chickens to merge
+
+Touchscreen: Works on mobile devices">
+            <img src="https://fast.startgamer.net/i/images/30791/origin/game_30791_644e1d15b93fb.jpg" 
+                 class="game-image" 
+                 alt="Chicken Merge">
+            <h5 class="game-title">Chicken Merge</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="parkour">
+          <div class="game-card" 
+               data-game="https://kdata1.com/2020/05/slope/"
+               data-description="Don't fall into the endless pit below. Reach the end while collecting gems.">
+            <img src="Images/Slope3.png" 
+                 class="game-image" 
+                 alt="Slope 3">
+            <h5 class="game-title">Slope 3</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="arcade">
+          <div class="game-card" 
+               data-game="https://MajesticWafer.github.io/tiny-fishing"
+               data-description="Fish up the best fish you can find! Can you become a tiny fishing master?">
+            <img src="Images/TinyFishing.png" 
+                 class="game-image" 
+                 alt="Tiny Fishing">
+            <h5 class="game-title">Tiny Fishing</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="action">
+          <div class="game-card" 
+               data-game="https://games.poki.com/458768/c89f4abe-5041-497b-8705-986b6f3b748c?tag=pg-abc97ca6b94fcb9e9f0820ae31235075cca93669&site_id=3&iso_lang=en&country=AU&poki_url=https://poki.com/en/g/minefun-io&hoist=yes&nonPersonalized=n&cloudsavegames=n&familyFriendly=n&categories=6,13,48,58,76,77,88,93,96,744,885,1120,1141,1143,1147,1177,1185,1190,1193,1194,1197"
+               data-description="Select one of the various gamemodes to play in! Use WASD to move and parkour around with friends in multiplayer.">
+            <img src="Images/MineFun.png" 
+                 class="game-image" 
+                 alt="MineFun">
+            <h5 class="game-title">Mine Fun</h5>
+          </div>
+        </div>
+
+        
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="arcade">
+          <div class="game-card" 
+               data-game="https://fridaynightfunkinweek7.github.io/"
+               data-description="Select your favourite week and use the arrow keys to play. Time your presses with the colourful arrows.">
+            <img src="Images/FridayNightFunkin.png" 
+                 class="game-image" 
+                 alt="Friday Night Funkin">
+            <h5 class="game-title">Friday Night Funkin 1-7</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="parkour">
+          <div class="game-card" 
+               data-game="https://www.twoplayergames.org/gameframe/geometry-vibes"
+               data-description="Hold space to move up, and let gravity to do the rest! Avoid spikes, walls and slide up and down through the difficult levels. Becoming a master just takes time!">
+            <img src="Images/GeometryVibes.png" 
+                 class="game-image" 
+                 alt="Geometry Vibes">
+            <h5 class="game-title">Geometry Vibes</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="action">
+          <div class="game-card" 
+               data-game="https://run3.io/popgame/fnaf/fnaf1/"
+               data-description="As a night-gaurd, check the security cameras and watch out for certain animatronics hunting you down.">
+            <img src="https://static0.gamerantimages.com/wordpress/wp-content/uploads/2022/10/five-nights-at-freddys-metacritic-(1).jpg" 
+                 class="game-image" 
+                 alt="FNAF">
+            <h5 class="game-title">Five Nights At Freddy's</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="parkour">
+          <div class="game-card" 
+               data-game="https://www.hoodamath.com/mobile/games/ovo/game.html?nocheckorient=1"
+               data-description="Parkour around and learn the game's unique mechanics! WASD or arrows to move, space to jump and many more neat tricks.">
+            <img src="Images/OvO.png" 
+                 class="game-image" 
+                 alt="OvO">
+            <h5 class="game-title">OvO</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="parkour">
+          <div class="game-card" 
+               data-game="https://html5.gamedistribution.com/5532111b774e4ca18238b41c029617e0/?gd_sdk_referrer_url=https%3A%2F%2Fwww.1001games.com%2Fskill%2Fobby-tower-parkour-climb"
+               data-description="In a roblox style game, use WASD to move and jump across platforms. Don't fall down!">
+            <img src="https://assets.misjuegos.com/3/117803/103831/672x448/obby-tower-parkour-climb.webp" 
+                 class="game-image" 
+                 alt="Parkour Obby">
+            <h5 class="game-title">Parkour Obby</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="action">
+          <div class="game-card" 
+               data-game="https://www.twoplayergames.org/gameframe/diep-io"
+               data-description="Evolve your tank and adapt to different play styles to defeat all your enemies.">
+            <img src="Images/DiepIo.png" 
+                 class="game-image" 
+                 alt="Diep io">
+            <h5 class="game-title">Diep io</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="puzzle">
+          <div class="game-card" 
+               data-game="https://html5.gamedistribution.com/7980c23fbbae4af6851e01052fce3cce/?gd_sdk_referrer_url=https%3A%2F%2Fwww.miniplay.com%2Fgame%2Ftall-man-run&mp_assets=https%3A%2F%2Fs2.minijuegosgratis.com%2F&mp_embed=0&mp_game_id=248407&mp_game_uid=tall-man-run&mp_game_url=https%3A%2F%2Fwww.miniplay.com%2Fembed%2Ftall-man-run&mp_int=1&mp_locale=en_US&mp_player_type=IFRAME&mp_site_https_url=https%3A%2F%2Fwww.miniplay.com%2F&mp_site_name=miniplay.com&mp_site_url=https%3A%2F%2Fwww.miniplay.com%2F&mp_timezone=Australia%2FSydney&mp_view_type="
+               data-description="Grow your blob man by taking the green portals and avoiding the red ones. A little math can't hurt...">
+            <img src="Images/TallManRun.png" 
+                 class="game-image" 
+                 alt="Tall Man Run">
+            <h5 class="game-title">Tall Man Run</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="sports">
+          <div class="game-card" 
+               data-game="https://www.twoplayergames.org/gameframe/volley-random"
+               data-description="Use space to jump and hit the volleyball to the other side of the court. Make sure it doesn't land on our ground!">
+            <img src="Images/VolleyRandom.png" 
+                 class="game-image" 
+                 alt="Volley Random">
+            <h5 class="game-title">Volley Random</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="action">
+          <div class="game-card" 
+               data-game="https://bitlife-game.io/game/bitlife/"
+               data-description="Choose your own path in life in bitlife! Become anything you want, and build your own personality!">
+            <img src="Images/BitLife.png" 
+                 class="game-image" 
+                 alt="Bitlife">
+            <h5 class="game-title">Bitlife</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="sports">
+          <div class="game-card" 
+               data-game="https://basketball-stars.io/game/basketball-stars/"
+               data-description="Choose your star and challenge your opponent in a tense 1v1. Use space to jump and throw the basketball into the hoops. Don't miss!">
+            <img src="Images/BasketballStars.png" 
+                 class="game-image" 
+                 alt="Basketball Stars">
+            <h5 class="game-title">Basketball Stars</h5>
+          </div>
+        </div>
+
+
+        <div class="col-xl-3 col-lg-4 col-md-6" data-category="arcade">
+          <div class="game-card" 
+               data-game="https://unblockedgamesgg.com/games/html5/crossy-road/index.html?world=original"
+               data-description="Cross the road without getting run over by a car! Move forward backwards left and right to get the highest score!">
+            <img src="Images/CrossyRoad.png" 
+                 class="game-image" 
+                 alt="Crossy Road">
+            <h5 class="game-title">Crossy Road</h5>
+          </div>
+        </div>
+
+
+                <div class="col-xl-3 col-lg-4 col-md-6" data-category="arcade">
+          <div class="game-card" 
+               data-game="https://games.crazyplays.com/bda06a16-78f6-4125-b29e-a87fdba9541c/index.html?noads=true"
+               data-description="Merge the different fruits and don't make the bowl overflow! Can you get the infamous watermelon?">
+            <img src="Images/WatermelonDrop.png" 
+                 class="game-image" 
+                 alt="Watermelon Drop">
+            <h5 class="game-title">Watermelon Drop</h5>
+          </div>
+        </div>
+
+
+                <div class="col-xl-3 col-lg-4 col-md-6" data-category="arcade">
+          <div class="game-card" 
+               data-game="https://www.twoplayergames.org/gameframe/get-on-top"
+               data-description="One job... knock your opponent to the ground! Keep your head safe and jump using space.">
+            <img src="Images/GetOnTop.png" 
+                 class="game-image" 
+                 alt="Get On Top">
+            <h5 class="game-title">Get On Top</h5>
+          </div>
+        </div>
+
+
+                <div class="col-xl-3 col-lg-4 col-md-6" data-category="puzzle">
+          <div class="game-card" 
+               data-game="https://en.gameslol.net/data/thereisnog/index.html"
+               data-description="There is no game so there can't be controls... just solve the puzzles, see where it gets you... but stop playing when asked.">
+            <img src="Images/ThereIsNoGame.png" 
+                 class="game-image" 
+                 alt="There Is No Game">
+            <h5 class="game-title">There Is No Game</h5>
+          </div>
+        </div>
+
+
+      </div>
+
+  </main>
+
+
+
+  <script>
+// Updated PlaySphere Game Hub Script with fixed sampling counts
+
+// Utility: Fisher–Yates shuffle sampling
+function getRandomSample(array, n) {
+  const copy = array.slice();
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, n);
+}
+
+// Opens game view and populates recommendations
+function openGame(gameUrl, description, category) {
+  document.getElementById('gameView').style.display = 'block';
+  document.getElementById('gameGrid').style.display = 'none';
+  document.getElementById('categoryNav').style.display = 'none';
+  document.getElementById('gameDescription').textContent = description;
+  loadGame(gameUrl);
+  populateRecommendations(category);
+}
+
+// Recommendation System: 14 same-category, 40 random others
+function populateRecommendations(currentCategory) {
+  // Sample up to 14 same-category games (excluding the current card itself if needed)
+  const sameElements = Array.from(document.querySelectorAll(`[data-category="${currentCategory}"]`));
+  // Optionally remove the currently loaded game from sameElements here if duplication occurs
+  const sameSample = getRandomSample(sameElements, Math.min(14, sameElements.length));
+  populateSection('#sameCategoryRecommendations', sameSample, true);
+
+  // Sample 40 random games from other categories
+  const allGames = Array.from(document.querySelectorAll('[data-category]'));
+  const filtered = allGames.filter(el => el.dataset.category !== currentCategory);
+  const randomSample = getRandomSample(filtered, Math.min(40, filtered.length));
+  populateSection('#randomRecommendations', randomSample, false);
+}
+
+// Clones elements into container and attaches click-handlers
+function populateSection(selector, elements, onlyCard) {
+  const container = document.querySelector(selector);
+  container.innerHTML = '';
+
+  elements.forEach(el => {
+    if (onlyCard) {
+      const cardClone = el.querySelector('.game-card').cloneNode(true);
+      cardClone.style.transform = 'none';
+      cardClone.style.boxShadow = 'none';
+      const category = el.dataset.category;
+      const url = cardClone.dataset.game;
+      const desc = cardClone.dataset.description;
+      cardClone.addEventListener('click', () => openGame(url, desc, category));
+      container.appendChild(cardClone);
+    } else {
+      const colClone = el.cloneNode(true);
+      const card = colClone.querySelector('.game-card');
+      card.style.transform = 'none';
+      card.style.boxShadow = 'none';
+      const category = colClone.dataset.category;
+      const url = card.dataset.game;
+      const desc = card.dataset.description;
+      card.addEventListener('click', () => openGame(url, desc, category));
+      container.appendChild(colClone);
+    }
+  });
+}
+
+// Close game view and restore layout
+function closeGame() {
+  document.getElementById('gameView').style.display = 'none';
+  document.getElementById('gameGrid').style.removeProperty('display');
+  document.getElementById('categoryNav').style.removeProperty('display');
+  document.getElementById('gameFrame').src = '';
+  if (document.fullscreenElement) document.exitFullscreen();
+}
+
+// Fullscreen toggle helper
+function toggleFullScreen() {
+  const elem = document.getElementById('gameFrame');
+  if (!document.fullscreenElement) {
+    elem.requestFullscreen().catch(err => alert(`Error entering fullscreen: ${err.message}`));
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// Scale game iframe within its wrapper
+function scaleGame(mode) {
+  const frame = document.getElementById('gameFrame');
+  const wrapper = frame.parentElement;
+  const { offsetWidth: wrapperWidth, offsetHeight: wrapperHeight } = wrapper;
+  const gameWidth = 1100;
+  const gameHeight = 800;
+  let scale = 1;
+  if (mode === 'fit') {
+    scale = Math.min(wrapperWidth / gameWidth, wrapperHeight / gameHeight);
+  } else if (mode === 'fill') {
+    scale = Math.max(wrapperWidth / gameWidth, wrapperHeight / gameHeight);
+  } else {
+    scale = mode;
+  }
+  frame.style.width = `${gameWidth}px`;
+  frame.style.height = `${gameHeight}px`;
+  frame.style.transform = `scale(${scale})`;
+  frame.style.left = `${(wrapperWidth - gameWidth * scale) / 2}px`;
+  frame.style.top = `${(wrapperHeight - gameHeight * scale) / 2}px`;
+}
+
+// Load game into iframe then auto-fit
+function loadGame(url) {
+  const frame = document.getElementById('gameFrame');
+  frame.onload = () => setTimeout(() => scaleGame('fit'), 500);
+  frame.src = url;
+}
+
+// Initial bindings: cards, filters, search
+(function init() {
+  document.querySelectorAll('.game-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const gameUrl = card.dataset.game;
+      const desc = card.dataset.description;
+      const category = card.closest('[data-category]').dataset.category;
+      openGame(gameUrl, desc, category);
+    });
+  });
+
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const filter = this.dataset.filter;
+      document.querySelectorAll('[data-category]').forEach(game => {
+        game.style.display = (filter === 'all' || game.dataset.category === filter) ? '' : 'none';
+      });
+    });
+  });
+
+  document.querySelector('.search-box').addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    document.querySelectorAll('#gameGrid > div').forEach(cell => {
+      const title = cell.querySelector('.game-title').textContent.toLowerCase();
+      cell.style.display = title.includes(query) ? '' : 'none';
+    });
+  });
+})();
+
+  </script>
+</body>
+</html>
